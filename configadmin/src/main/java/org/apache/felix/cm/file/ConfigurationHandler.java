@@ -30,8 +30,10 @@ import java.io.PushbackReader;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -200,7 +202,7 @@ public class ConfigurationHandler
     {
         BufferedWriter bw = new BufferedWriter( new OutputStreamWriter( out, ENCODING ) );
 
-        for ( Enumeration ce = properties.keys(); ce.hasMoreElements(); )
+        for ( Enumeration ce = orderedKeys(properties); ce.hasMoreElements(); )
         {
             String key = ( String ) ce.nextElement();
 
@@ -212,6 +214,28 @@ public class ConfigurationHandler
         }
 
         bw.flush();
+    }
+
+    /**
+     * Generates an <code>Enumeration</code> for the given
+     * <code>Dictionary</code> where the keys of the <code>Dictionary</code>
+     * are provided in sorted order.
+     *
+     * @param properties
+     *                   The <code>Dictionary</code> that keys are sorted.
+     * @return An <code>Enumeration</code> that provides the keys of
+     *         properties in an ordered manner.
+     */
+    private static Enumeration orderedKeys(Dictionary properties) {
+        String[] keyArray = new String[properties.size()];
+        int i = 0;
+        for ( Enumeration ce = properties.keys(); ce.hasMoreElements(); )
+        {
+            keyArray[i] = ( String ) ce.nextElement();
+            i++;
+        }
+        Arrays.sort(keyArray);
+        return Collections.enumeration( Arrays.asList( keyArray ) );
     }
 
 
